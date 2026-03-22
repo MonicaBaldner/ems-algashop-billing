@@ -3,6 +3,7 @@ package com.algaworks.algashop.billing.application.invoice.query;
 import com.algaworks.algashop.billing.application.invoice.management.PayerData;
 import com.algaworks.algashop.billing.domain.model.invoice.InvoiceStatus;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class InvoiceOutput {
     private UUID id;
     private String orderId;

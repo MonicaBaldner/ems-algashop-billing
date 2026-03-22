@@ -1,0 +1,33 @@
+
+spring:
+  application:
+    name: billing
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+  flyway:
+    enabled: false
+    locations: classpath:db/migration
+
+algashop:
+  integrations:
+    payment:
+      provider: FASTPAY
+
+management:
+  info:
+    env.enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+      group:
+        readiness:
+          include: db,readinessState
+
+info:
+  app.name: AlgaShop Billing API

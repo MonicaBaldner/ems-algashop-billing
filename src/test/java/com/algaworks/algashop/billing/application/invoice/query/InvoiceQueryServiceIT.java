@@ -1,5 +1,6 @@
 package com.algaworks.algashop.billing.application.invoice.query;
 
+import com.algaworks.algashop.billing.application.invoice.AbstractApplicationIT;
 import com.algaworks.algashop.billing.domain.model.invoice.Invoice;
 import com.algaworks.algashop.billing.domain.model.invoice.InvoiceRepository;
 import com.algaworks.algashop.billing.domain.model.invoice.InvoiceTestDataBuilder;
@@ -17,12 +18,12 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@Transactional
-@Testcontainers
-class InvoiceQueryServiceIT {
+//@SpringBootTest
+//@Transactional
+//@Testcontainers
+class InvoiceQueryServiceIT extends AbstractApplicationIT {
 
-    @Container
+  /*  @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15")
             .withDatabaseName("billing_test")
             .withUsername("test")
@@ -36,7 +37,7 @@ class InvoiceQueryServiceIT {
         registry.add("spring.datasource.driver-class-name", postgres::getDriverClassName);
         registry.add("spring.flyway.enabled", () -> true);
         registry.add("spring.flyway.locations", () -> "classpath:db/migration,classpath:db/clean");
-    }
+    }*/
 
     @Autowired
     private InvoiceQueryService invoiceQueryService;

@@ -51,4 +51,9 @@ public class CreditCardTestDataBuilder {
         this.gatewayCreditCardCode = gatewayCreditCardCode;
         return this;
     }
+
+    public CreditCardTestDataBuilder withCustomerId(UUID anotherCustomerId) {
+        this.customerId = anotherCustomerId;
+        return this;
+    }
 }

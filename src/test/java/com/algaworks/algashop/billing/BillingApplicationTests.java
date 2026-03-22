@@ -13,7 +13,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 class BillingApplicationIT {
 
 	@Container
-	static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15");
+	//static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15");
+	static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:17-alpine");
 
 	@DynamicPropertySource
 	static void configureProperties(DynamicPropertyRegistry registry) {

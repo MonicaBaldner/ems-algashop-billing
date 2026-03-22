@@ -2,6 +2,7 @@ package com.algaworks.algashop.billing.domain.model.invoice.payment;
 
 import com.algaworks.algashop.billing.domain.model.invoice.Payer;
 import com.algaworks.algashop.billing.domain.model.invoice.PaymentMethod;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

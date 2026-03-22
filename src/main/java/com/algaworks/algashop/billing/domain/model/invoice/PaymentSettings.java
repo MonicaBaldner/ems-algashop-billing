@@ -15,6 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Table(name = "payment_settings")
 public class PaymentSettings {
 
     @EqualsAndHashCode.Include
@@ -24,6 +25,7 @@ public class PaymentSettings {
     private String gatewayCode;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "method")
     private PaymentMethod method;
 
     @Getter(AccessLevel.PRIVATE)

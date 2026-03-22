@@ -1,6 +1,8 @@
 package com.algaworks.algashop.billing.application.invoice.management;
 
+import com.algaworks.algashop.billing.application.invoice.AbstractApplicationIT;
 import com.algaworks.algashop.billing.domain.model.creditcard.CreditCard;
+import com.algaworks.algashop.billing.domain.model.creditcard.CreditCardNotFoundException;
 import com.algaworks.algashop.billing.domain.model.creditcard.CreditCardRepository;
 import com.algaworks.algashop.billing.domain.model.creditcard.CreditCardTestDataBuilder;
 import com.algaworks.algashop.billing.domain.model.invoice.*;
@@ -28,12 +30,12 @@ import java.util.UUID;
 import static org.mockito.ArgumentMatchers.any;
 
 
-@Testcontainers
-@SpringBootTest
-@Transactional
-class InvoiceManagementApplicationServiceIT {
+//@Testcontainers
+//@SpringBootTest
+//@Transactional
+class InvoiceManagementApplicationServiceIT extends AbstractApplicationIT {
 
-    @Container
+  /*  @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15")
             .withDatabaseName("billing_test")
             .withUsername("test")
@@ -47,7 +49,7 @@ class InvoiceManagementApplicationServiceIT {
         registry.add("spring.datasource.driver-class-name", postgres::getDriverClassName);
         registry.add("spring.flyway.enabled", () -> true);
         registry.add("spring.flyway.locations", () -> "classpath:db/migration");
-    }
+    }*/
 
 
     @Autowired
@@ -72,10 +74,14 @@ class InvoiceManagementApplicationServiceIT {
     @Test
     public void shouldGenerateInvoiceWithCreditCardAsPayment() {
         UUID customerId = UUID.randomUUID();
-        CreditCard creditCard = CreditCardTestDataBuilder.aCreditCard().build();
+        CreditCard creditCard = CreditCardTestDataBuilder.aCreditCard()
+                .withCustomerId(customerId)
+                .build();
         creditCardRepository.saveAndFlush(creditCard);
 
-        GenerateInvoiceInput input = GenerateInvoiceInputTestDataBuilder.anInput().build();
+        GenerateInvoiceInput input = GenerateInvoiceInputTestDataBuilder.anInput()
+                .customerId(customerId)
+                .build();
 
         input.setPaymentSettings(
                 PaymentSettingsInput.builder()
@@ -177,4 +183,30 @@ class InvoiceManagementApplicationServiceIT {
         Mockito.verify(invoiceEventListener).listen(Mockito.any(InvoiceCanceledEvent.class));
     }
 
+    @Test
+    public void shouldThrowExceptionWhenCreditCardDoesNotBelongToCustomer() {
+        UUID customerId = UUID.randomUUID();
+        UUID anotherCustomerId = UUID.randomUUID();
+
+        // Cria um cartão de crédito vinculado a outro cliente
+        CreditCard creditCard = CreditCardTestDataBuilder.aCreditCard()
+                .withCustomerId(anotherCustomerId)
+                .build();
+        creditCardRepository.saveAndFlush(creditCard);
+
+        // Monta o input com customerId diferente do dono do cartão
+        GenerateInvoiceInput input = GenerateInvoiceInputTestDataBuilder.anInput().build();
+        input.setCustomerId(customerId);
+        input.setPaymentSettings(
+                PaymentSettingsInput.builder()
+                        .creditCardId(creditCard.getId())
+                        .method(PaymentMethod.CREDIT_CARD)
+                        .build()
+        );
+
+        // Executa e valida que a exceção é lançada
+        Assertions.assertThatThrownBy(() -> applicationService.generate(input))
+                .isInstanceOf(CreditCardNotFoundException.class)
+                .hasMessageContaining("Credit card");
+    }
 }
